@@ -1,0 +1,101 @@
+.dashboard-container {
+    background-color: #f4f7f6;
+    min-height: calc(100vh - 142px); /* Altura da tela menos header e footer */
+    padding: 40px 20px;
+}
+
+.dashboard-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.dashboard-content h1 {
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 15px;
+}
+
+.events-section {
+    margin-bottom: 40px;
+}
+
+.events-section h2 {
+    font-size: 24px;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.subscription-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.07);
+    padding: 25px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card-info h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.card-info p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.card-info .status-inscrito {
+    color: #3498db;
+    font-weight: bold;
+}
+
+.card-info .status-concluido {
+    color: #95a5a6;
+    font-weight: bold;
+}
+
+.card-actions {
+    text-align: right;
+}
+
+.action-button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #c0392b;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+}
+
+.certificate-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.certificate-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.no-certificate {
+    color: #7f8c8d;
+    font-style: italic;
+}

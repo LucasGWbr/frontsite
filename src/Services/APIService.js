@@ -32,7 +32,7 @@ export const postAuth = async (authData) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return await response;
+        return response;
 }
 
 export const postUser = async (userData) => {
@@ -44,7 +44,19 @@ export const postUser = async (userData) => {
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return await response;
+    return response;
+}
+
+export const postInscription = async (inscriptionData) => {
+    const response = await fetch(`${API_BASE_URL}/inscriptions`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(inscriptionData),
+    })
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response;
 }
 
 // Você poderia adicionar outras funções aqui, como:

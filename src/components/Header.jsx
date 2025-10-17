@@ -1,8 +1,16 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
-import './Header.css';
+import '../assets/css/Header.css';
+import {useAuth} from "../Services/AuthContext.jsx";
 
 const Header = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
+        return localStorage.getItem('isAuthenticated') === 'true';
+    });
+    const [user, setUser] = useState(() => {
+        return localStorage.getItem('user') || null;
+    });
+    console.log(user);
     return (
         <header className="main-header">
             <div className="header-content">
@@ -19,9 +27,10 @@ const Header = () => {
                     </svg>
                     <span>EventOS</span>
                 </Link>
-                <nav>
-                    <Link to="/login" className="header-login-button">
-                        Login
+                <nav >
+                    {//fazzer um button fica melhrrrr}
+                    <Link to={isAuthenticated? '/login' : '/'} className="header-login-button" disabled={isAuthenticated}>
+                        {isAuthenticated ? 'Logout' : 'Login'}
                     </Link>
                 </nav>
             </div>

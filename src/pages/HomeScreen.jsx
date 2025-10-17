@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import './HomeScreen.css';
+import '../assets/css/HomeScreen.css';
 import EventDetails from './EventDetails';
 import {getEvent} from "../Services/APIService.js";
 import Header from "../components/Header.jsx";
@@ -14,20 +14,20 @@ const HomeScreen = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     useEffect(() => {
-        const loadPosts = async () => {
+        const loadEvent = async () => {
             try {
                 const data = await getEvent();
                 setEvents(data);
             } catch (err) {
                 // 3. Se getPosts() lançar um erro, nós o capturamos aqui
-                setError('Não foi possível carregar os posts.');
+                setError('Não foi possível carregar os eventos.');
                 throw err;
             } finally {
                 setLoading(false);
             }
         };
 
-        loadPosts();
+        loadEvent();
     }, []);
     if (loading) {
         return <p>Carregando posts...</p>;
@@ -38,6 +38,10 @@ const HomeScreen = () => {
     }
 
     if (selectedEvent) {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth' // 'auto' ou 'smooth'
+        });
         return <EventDetails event={selectedEvent} onBack={() => setSelectedEvent(null)} />;
     }
 
@@ -52,7 +56,7 @@ const HomeScreen = () => {
             </header>
             <div className="events-grid">
                 {events.map(event => (
-                    <div key={event.id} className="event-banner">
+                    <div key={event.eventId} className="event-banner">
                         <img src={imageUrl} alt={event.name} className="event-image" />
                         <div className="event-info">
                             <h3>{event.name}</h3>

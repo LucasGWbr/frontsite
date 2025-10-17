@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './RegistrationForm.css';
+import '../assets/css/RegistrationForm.css';
 import {postUser} from "../Services/APIService.js";
 
 const RegistrationForm = () => {

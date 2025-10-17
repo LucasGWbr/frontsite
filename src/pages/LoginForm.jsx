@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
-import './LoginForm.css';
-import {postAuth} from "../Services/APIService.js";
+import '../assets/css/LoginForm.css';
+import {useAuth} from "../Services/AuthContext.jsx";
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const {login} = useAuth();
+    const navigate = useNavigate();
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
         setMessage('');
-        try {
-            const result = await postAuth({email: email, password: password});
-            if (result.status === 200) {
-                setMessage(await result.text());
-            }
-        } catch (error) {
-            setMessage('ERROR');
-            //vai vir sempre aqui, api retorna 401
-            throw error;
-        } finally {
-            setIsLoading(false);
+        const loginStatus = await login(email, password);
+        setIsLoading(loginStatus.isLoading);
+        if (loginStatus.isAuthenticated) {
+            navigate('/dashboard');
+        }else{
+            setMessage(loginStatus.message);
+            setPassword('');
         }
     };
 
@@ -56,6 +56,7 @@ const LoginForm = () => {
                         disabled={isLoading}
                         placeholder="Digite sua senha"
                     />
+                    {message && <p>{message}</p>}
                 </div>
                 <button type="submit" className="login-button" disabled={isLoading}>
                     {isLoading ? 'Entrando...' : 'Entrar'}
@@ -64,7 +65,6 @@ const LoginForm = () => {
                     <a href="#">Esqueceu a senha?</a>
                     <a href="/register">Criar conta</a>
                 </div>
-                {message && <p>{message}</p>}
             </form>
         </div>
     );
