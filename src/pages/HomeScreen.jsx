@@ -2,12 +2,14 @@ import React, {useEffect, useState} from 'react';
 import './HomeScreen.css';
 import EventDetails from './EventDetails';
 import {getEvent} from "../Services/APIService.js";
+import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 // Dados mocados para simular uma chamada de API
 
 const HomeScreen = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const imageUrl = "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1200";
+    const imageUrl = "https://static-cse.canva.com/blob/1534622/eventocorporativo1.45438858.jpg";
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -40,7 +42,10 @@ const HomeScreen = () => {
     }
 
     return (
+        <div className="HomeScreen">
+        <Header />
         <div className="homescreen-container">
+
             <header className="homescreen-header">
                 <h1>Eventos Disponíveis</h1>
                 <p>Explore os próximos eventos e garanta sua vaga.</p>
@@ -51,7 +56,7 @@ const HomeScreen = () => {
                         <img src={imageUrl} alt={event.name} className="event-image" />
                         <div className="event-info">
                             <h3>{event.name}</h3>
-                            <p className="event-date">{event.startDate}</p>
+                            <p className="event-date">{new Date(event.startDate).toLocaleDateString('pt-BR')}</p>
                             <p>{event.description}</p>
                             <button className="details-button" onClick={() => setSelectedEvent(event)}>
                                 Saber mais
@@ -60,6 +65,8 @@ const HomeScreen = () => {
                     </div>
                 ))}
             </div>
+        </div>
+            <Footer />
         </div>
     );
 };

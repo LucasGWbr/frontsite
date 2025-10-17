@@ -1,6 +1,6 @@
-// src/services/ApiService.js
 
 // A URL base da nossa API
+
 const API_BASE_URL = 'http://localhost:8080';
 
 /**
@@ -22,6 +22,30 @@ export const getEvent = async () => {
         throw error;
     }
 };
+
+export const postAuth = async (authData) => {
+        const response = await fetch(`${API_BASE_URL}/auth`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(authData),
+        })
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response;
+}
+
+export const postUser = async (userData) => {
+    const response = await fetch(`${API_BASE_URL}/usuarios`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(userData),
+    })
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response;
+}
 
 // Você poderia adicionar outras funções aqui, como:
 // export const getPostById = async (id) => { ... };

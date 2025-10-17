@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
 import './LoginForm.css';
+import {postAuth} from "../Services/APIService.js";
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        // Aqui você adicionaria a lógica de autenticação
-        console.log('Tentativa de login com:', { email, password });
-        alert('Login enviado! (Verifique o console)');
+        setIsLoading(true);
+        setMessage('');
+        try {
+            const result = await postAuth({email: email, password: password});
+            if (result.status === 200) {
+                setMessage(await result.text());
+            }
+        } catch (error) {
+            setMessage('ERROR');
+            //vai vir sempre aqui, api retorna 401
+            throw error;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -26,6 +40,7 @@ const LoginForm = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        disabled={isLoading}
                         placeholder="exemplo@email.com"
                     />
                 </div>
@@ -38,15 +53,18 @@ const LoginForm = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
+                        disabled={isLoading}
                         placeholder="Digite sua senha"
                     />
                 </div>
-                <button type="submit" className="login-button">
-                    Entrar
+                <button type="submit" className="login-button" disabled={isLoading}>
+                    {isLoading ? 'Entrando...' : 'Entrar'}
                 </button>
                 <div className="form-footer">
                     <a href="#">Esqueceu a senha?</a>
+                    <a href="/register">Criar conta</a>
                 </div>
+                {message && <p>{message}</p>}
             </form>
         </div>
     );

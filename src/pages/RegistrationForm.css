@@ -1,36 +1,38 @@
-/* Estilo geral do container */
-.login-container {
+/* Estilo geral do container - reaproveitando o degradê */
+.registration-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    max-height: 100vh;
+    padding: 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
 }
 
 /* Estilo do formulário */
-.login-form {
+.registration-form {
     background-color: white;
     padding: 40px 50px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 400px;
+    max-width: 420px; /* Um pouco mais largo para acomodar mais campos se necessário */
     text-align: center;
 }
 
-.login-form h2 {
+.registration-form h2 {
     margin-bottom: 10px;
     color: #333;
     font-size: 24px;
 }
 
-.login-form p {
+.registration-form p {
     margin-bottom: 30px;
     color: #777;
 }
 
-/* Grupo de input e label */
+/* Grupo de input e label (idêntico ao do login) */
 .input-group {
     margin-bottom: 20px;
     text-align: left;
@@ -58,8 +60,8 @@
     box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
 }
 
-/* Botão de Login com Animação */
-.login-button {
+/* Botão de Cadastro com Animação (idêntico ao do login) */
+.register-button {
     width: 100%;
     padding: 15px;
     border: none;
@@ -72,27 +74,26 @@
     transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-/* Animação ao passar o mouse */
-.login-button:hover {
+.register-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* Animação ao clicar */
-.login-button:active {
+.register-button:active {
     transform: translateY(1px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Rodapé do formulário */
 .form-footer {
-    margin-top: 20px;
-    display: grid;
+    margin-top: 25px;
+    color: #555;
 }
 
 .form-footer a {
     color: #764ba2;
     text-decoration: none;
+    font-weight: bold;
     transition: color 0.3s ease;
 }
 
