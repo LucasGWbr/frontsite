@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast'; // 1. Importe o Toaster
 
 // Importe seus componentes
 import LoginForm from './pages/LoginForm.jsx';
@@ -16,8 +17,18 @@ function App() {
     return (
         // Usamos a classe do index.html
         <div className="full-page-container">
+            <Toaster
+                position="top-right" // Posição na tela
+                reverseOrder={false}
+                toastOptions={{
+                    duration: 3000, // Duração de 3 segundos
+                    style: {
+                        background: '#363636',
+                        color: '#fff',
+                    },
+                }}
+            />
             <AuthProvider>
-
             <Routes>
                 <Route path="/" element={<HomeScreen />} />
                 <Route path="/login" element={<LoginForm />} />

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import '../assets/css/Header.css';
-import {useAuth} from "../Services/AuthContext.jsx";
+import { useAuth} from "../Services/AuthContext.jsx";
 
 const Header = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -10,7 +10,16 @@ const Header = () => {
     const [user, setUser] = useState(() => {
         return localStorage.getItem('user') || null;
     });
-    console.log(user);
+    const [button, setButton] = useState('');
+    const navigate = useNavigate();
+    const {logout} = useAuth();
+
+    if(button === 'Login'){
+        navigate('/login');
+    }else if(button === 'Logout'){
+        const response = logout();
+        window.location.reload();
+    }
     return (
         <header className="main-header">
             <div className="header-content">
@@ -28,10 +37,12 @@ const Header = () => {
                     <span>EventOS</span>
                 </Link>
                 <nav >
-                    {//fazzer um button fica melhrrrr}
-                    <Link to={isAuthenticated? '/login' : '/'} className="header-login-button" disabled={isAuthenticated}>
+                    <button
+                        onClick={() => setButton(isAuthenticated ? 'Logout' : 'Login')}
+                        className="header-login-button"
+                    >
                         {isAuthenticated ? 'Logout' : 'Login'}
-                    </Link>
+                    </button>
                 </nav>
             </div>
         </header>

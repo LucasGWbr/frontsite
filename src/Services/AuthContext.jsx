@@ -2,15 +2,9 @@
 import React, { createContext, useState, useContext } from 'react';
 import {postAuth} from "./APIService.js";
 
-// 1. Cria o Contexto
 const AuthContext = createContext(null);
 
-// 2. Cria o Provedor do Contexto
-// Este componente irá envolver sua aplicação e prover o estado de autenticação
 export const AuthProvider = ({children}) => {
-    // Aqui você guardaria o estado do usuário.
-    // Para este exemplo, vamos usar um estado simples 'isAuthenticated'.
-    // No mundo real, isso poderia ser um objeto com dados do usuário (token, nome, etc.)
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
         return localStorage.getItem('isAuthenticated') === 'true';
     });
@@ -56,7 +50,7 @@ export const AuthProvider = ({children}) => {
         }
     ;
 
-    const logout = () => {
+    const logout = async () => {
         // Lógica de logout
         // 1. Limpa do localStorage
         localStorage.removeItem('isAuthenticated');

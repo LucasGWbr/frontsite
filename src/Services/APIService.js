@@ -48,10 +48,50 @@ export const postUser = async (userData) => {
 }
 
 export const postInscription = async (inscriptionData) => {
-    const response = await fetch(`${API_BASE_URL}/inscriptions`, {
+    const response = await fetch(`${API_BASE_URL}/inscription`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(inscriptionData),
+    })
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response;
+}
+
+export const getInscriptionByUser = async (id) => {
+    try{
+        const response = await fetch(`${API_BASE_URL}/inscription/user/${id}`);
+        if (!response.ok) {
+            throw new Error('Falha na resposta da rede.');
+        }
+        return await response.json();
+    } catch (error) {
+    console.error("Erro ao buscar inscrições:", error);
+    throw error;
+    }
+
+}
+
+export const getEventByUser = async (id) => {
+    try{
+        const response = await fetch(`${API_BASE_URL}/events/user/${id}`);
+        if (!response.ok) {
+            throw new Error('Falha na resposta da rede.');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Erro ao buscar inscrições:", error);
+        throw error;
+    }
+
+}
+
+export const patchInscription = async (id, status) => {
+    const response = await fetch(`${API_BASE_URL}/inscription/${id}`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(status),
     })
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

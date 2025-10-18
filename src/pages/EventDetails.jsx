@@ -1,10 +1,10 @@
 import '../assets/css/EventDetails.css';
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
-import {useAuth} from "../Services/AuthContext.jsx";
-import {postInscription, postUser} from "../Services/APIService.js";
+import { getInscriptionByUser, postInscription} from "../Services/APIService.js";
 import {useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import toast from 'react-hot-toast'; // 1. Importe a função toast
 
 const EventDetails = ({ event, onBack }) => {
     const imageUrl = "https://static-cse.canva.com/blob/1534622/eventocorporativo1.45438858.jpg";
@@ -15,23 +15,38 @@ const EventDetails = ({ event, onBack }) => {
         return localStorage.getItem('id') || null;
     });
     const navigate = useNavigate();
+    const [isInscripted, setIsInscripted] = useState(false);
 
+    useEffect(() => {
+        const verifyEvent = async () => {
+            if(id != null){
+                const data = await getInscriptionByUser(id);
+                const inscript = data.find(inscription => inscription.eventId === event.eventId);
+                if(inscript && inscript.status === 'ACTIVE') {
+                    setIsInscripted(true);
+                }
+            }
+        };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+        verifyEvent();
+    }, [event.eventId, id]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         if(isAuthenticated) {
             try{
-                const result = await postInscription({event: event.id, user: id, status: "ACTIVE"});
-                if(result.status === 201) {
-                    //toast de success
-                    navigate('/');
+                const result = await postInscription({ user: id, event: event.eventId, status: "ACTIVE"});
+                if(result.status === 201 || result.status === 200) {
+                    toast.success("Inscrição realizada com sucesso!");
+                    onBack();
                 }
             }catch (err){
+                toast.error("Erro ao realizar inscrição!")
                 console.log(err);
                 throw err;
             }
         }else{
-            //logar
+            navigate('/login');
         }
 
     };
@@ -54,8 +69,8 @@ const EventDetails = ({ event, onBack }) => {
                         <span>📍 {event.location}</span>
                     </p>
                     <p className="details-description">{event.description}</p>
-                    <button onClick={handleSubmit} className="register-button">
-                        {!isAuthenticated ? 'Entrar na conta' : 'Inscrever-se agora'}
+                    <button onClick={handleSubmit} className="register-button" disabled={isInscripted}>
+                        {!isAuthenticated ? 'Entrar na conta' : isInscripted ? 'Você ja esta inscrito' : 'Inscrever-se agora'}
                         </button>
                 </div>
             </div>
