@@ -44,6 +44,8 @@ const HomeScreen = () => {
         });
         return <EventDetails event={selectedEvent} onBack={() => setSelectedEvent(null)} />;
     }
+    const today = new Date();
+    const availableEvents = events.filter(i => new Date(i.startDate) > today);
 
     return (
         <div className="HomeScreen">
@@ -55,7 +57,7 @@ const HomeScreen = () => {
                 <p>Explore os próximos eventos e garanta sua vaga.</p>
             </header>
             <div className="events-grid">
-                {events.map(event => (
+                {availableEvents.length > 0 ? availableEvents.map(event => (
                     <div key={event.eventId} className="event-banner">
                         <img src={imageUrl} alt={event.name} className="event-image" />
                         <div className="event-info">
@@ -67,7 +69,7 @@ const HomeScreen = () => {
                             </button>
                         </div>
                     </div>
-                ))}
+                )): <p>Nenhum evento para se inscrever.</p>}
             </div>
         </div>
             <Footer />

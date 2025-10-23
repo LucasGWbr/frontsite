@@ -58,3 +58,75 @@
     transform: translateY(0);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
+/* --- Estilos para o Menu Dropdown (para combinar com seu CSS) --- */
+
+/* Container para o botão hamburger e o menu dropdown */
+.menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+/* Estilo para o botão hamburger (os 3 risquinhos).
+  Ele é estilizado como um botão de ícone, sem fundo,
+  mas usando a cor de destaque do seu tema.
+*/
+.hamburger-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px; /* Padding para facilitar o clique */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px; /* Mesmo border-radius dos seus botões */
+    color: #764ba2; /* Mesmo cor do seu ícone de "home" */
+    transition: background-color 0.3s ease;
+}
+
+/* Efeito hover sutil para o botão hamburger */
+.hamburger-button:hover {
+    background-color: #f5f5f5; /* Um cinza bem claro, comum em icon buttons */
+}
+
+/*
+  O menu dropdown que aparece ao clicar.
+*/
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px); /* Aparece abaixo do botão, com um pequeno espaço */
+    right: 0;
+    background-color: #ffffff; /* Fundo branco, igual ao seu header */
+    border-radius: 8px; /* Mesmo border-radius dos seus botões */
+    /* Mesma sombra do seu header */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    min-width: 200px; /* Largura mínima (ajuste se precisar) */
+    z-index: 100;
+    overflow: hidden; /* Garante que os itens respeitem o border-radius */
+    border: 1px solid #eee; /* Uma borda sutil para separar do fundo */
+}
+
+/*
+  Estilo para os botões "Meus treinamentos" e "Logout" dentro do menu.
+*/
+.dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px; /* Mesmo font-size do seu botão de login */
+    font-weight: bold; /* Mesmo font-weight do seu botão de login */
+    color: #333; /* Mesma cor do seu texto "EventOS" */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/*
+  No hover, o item do menu ganha a cor de destaque do tema
+  e um fundo levemente colorido.
+*/
+.dropdown-item:hover {
+    color: #764ba2; /* Cor de destaque no hover */
+    background-color: #f9f6ff; /* Um fundo roxo bem claro */
+}
