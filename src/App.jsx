@@ -11,7 +11,10 @@ import RegistrationForm from "./pages/RegistrationForm.jsx";
 import ProtectedRoute from "./Services/ProtectedRoute.jsx";
 import UserDashboard from "./pages/UserDashboard.jsx";
 import {AuthProvider} from "./Services/AuthContext.jsx";
+import PresenceRegistration from "./pages/PresenceRegistration.jsx";
 // ...
+
+
 
 function App() {
     return (
@@ -38,6 +41,10 @@ function App() {
                     <Route path="/dashboard" element={<UserDashboard />} />
                     {/* Adicione outras rotas que precisam de sessão aqui */}
                 </Route>
+                <Route
+                    path="/checkin"
+                    element={<PresenceRegistration />}
+                />
             </Routes>
                 </AuthProvider>
 

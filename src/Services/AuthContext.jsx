@@ -1,10 +1,27 @@
 // src/contexts/AuthContext.js
-import React, { createContext, useState, useContext } from 'react';
-import {postAuth} from "./APIService.js";
+import React, {createContext, useState, useContext, useEffect} from 'react';
+import {findUserId, postAuth, postPresence} from "./APIService.js";
+import localforage from "localforage";
+import toast from "react-hot-toast";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({children}) => {
+    useEffect(() => {
+        // 1. Tenta sincronizar assim que o app carrega (caso já esteja online)
+        if (navigator.onLine) {
+            syncPendingCheckins();
+        }
+
+        // 2. Adiciona o "escutador" para quando a internet VOLTAR
+        window.addEventListener('online', syncPendingCheckins);
+
+        // 3. Limpeza do efeito quando o componente desmontar
+        return () => {
+            window.removeEventListener('online', syncPendingCheckins);
+        };
+    }, []);
+
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
         return localStorage.getItem('isAuthenticated') === 'true';
     });
@@ -16,6 +33,55 @@ export const AuthProvider = ({children}) => {
         return localStorage.getItem('id') || null;
     });
 
+    localforage.config({
+        name: 'presenceUserRegistration',
+        storeName: 'checkinsUserPendentes'
+    });
+    const syncPendingCheckins = async () => {
+        console.log('Verificando check-ins pendentes...');
+
+        // Pega todas as chaves salvas na loja 'checkinsPendentes'
+        const keys = await localforage.keys();
+        // Filtra apenas as chaves de check-in
+        const checkinKeys = keys.filter(key => key.startsWith('checkin_'));
+
+        if (checkinKeys.length === 0) {
+            console.log('Nenhum check-in pendente.');
+            return;
+        }
+
+        toast.loading('Sincronizando check-ins pendentes...');
+
+        for (const key of checkinKeys) {
+            try {
+                const checkinData = await localforage.getItem(key);
+
+
+                const user = await findUserId(checkinData.emailUser);
+                try {
+                    const status = "ACTIVE";
+                    const result = await postPresence({idUser: user.id, idEvent: checkinData.idEvent, status: status});
+                    if (result.status === 201 || result.status === 200) {
+                        await localforage.removeItem(key);
+                        toast.success('Um check-in pendente foi sincronizado!');
+                    }else {
+                        toast.error(`Falha ao sincronizar o check-in ${key}.`);
+                    }
+                    } catch (err) {
+                    toast.error("Erro ao realizar inscrição!")
+                    console.log(err);
+                    throw err;
+                }
+
+            } catch (error) {
+                // Deu erro de rede no meio da sincronização,
+                // pare de tentar por agora.
+                toast.error('Falha na sincronização. Tentaremos mais tarde.');
+                break; // Sai do loop e espera o próximo evento 'online'
+            }
+        }
+        toast.dismiss(); // Remove o "loading"
+    };
 
     // Funções para simular login e logout
     const login = async (email,password) => {

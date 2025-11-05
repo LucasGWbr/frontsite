@@ -1,0 +1,165 @@
+/* Fundo idêntico ao do Login/Cadastro */
+.presence-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+}
+
+/* Card central, um pouco mais largo para acomodar os formulários */
+.presence-card {
+    background-color: white;
+    padding: 40px 50px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+}
+
+.presence-title {
+    font-size: 28px;
+    color: #333;
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.event-title {
+    font-size: 18px;
+    color: #764ba2;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.presence-form h3 {
+    font-size: 18px;
+    color: #444;
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Estilização reutilizada dos formulários de input */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 600;
+}
+
+/* Estilização unificada para <input> e <select>
+  Isso garante que ambos tenham a mesma aparência.
+*/
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    color:black;
+
+    /* Propriedades de consistência */
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff; /* Garante fundo branco no select */
+}
+
+/* Estilização unificada para o estado de :focus */
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+}
+
+/* Divisor "OU" */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 30px 0;
+    color: #aaa;
+    font-weight: 600;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ddd;
+}
+
+.divider:not(:empty)::before {
+    margin-right: 1em;
+}
+
+.divider:not(:empty)::after {
+    margin-left: 1em;
+}
+
+/* Estilos dos botões */
+.presence-button {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+/* Botão Primário (CTA Principal) */
+.presence-button.primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.presence-button.primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Botão Secundário (Cadastro Parcial) */
+.presence-button.secondary {
+    background-color: #fff;
+    color: #764ba2;
+    border: 2px solid #764ba2;
+}
+
+.presence-button.secondary:hover {
+    transform: translateY(-3px);
+    background-color: #f6f4ff;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo do Checkbox */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+    accent-color: #764ba2; /* Cor moderna para o "check" */
+}
+
+.checkbox-group label {
+    color: #555;
+    font-size: 14px;
+}
