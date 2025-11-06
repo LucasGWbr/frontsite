@@ -38,7 +38,7 @@ export const postAuth = async (authData) => {
 }
 
 export const postUser = async (userData) => {
-    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/usuarios`, {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(userData),
@@ -101,7 +101,7 @@ export const patchInscription = async (id, status) => {
     return response;
 }
 export const getUser = async (email) => {
-    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/usuarios?email=${email}`, {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user?email=${email}`, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
     })
