@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import '../assets/css/PresenceRegistration.css';
-import {findUserId, getEvent, getUser, postPresence, postUser} from "../Services/APIService.js";
+import {findUserId, getEvent, postInscription, postPresence, postUser} from "../Services/APIService.js";
 import localforage from 'localforage';
 
 const PresenceRegistration = ({eventName}) => {
@@ -70,7 +70,6 @@ const PresenceRegistration = ({eventName}) => {
 
                 toast.success('Você está offline. Seu check-in foi salvo e será enviado assim que a conexão voltar!');
 
-                // Limpar tela, redirecionar, etc.
             } catch (err) {
                 toast.error('Erro ao salvar o check-in localmente.');
                 throw err;
@@ -83,6 +82,7 @@ const PresenceRegistration = ({eventName}) => {
         const user = await findUserId(email);
         try {
             const status = "ACTIVE";
+            await postInscription({ user: user.id, event: evento, status: status });
             const result = await postPresence({idUser: user.id, idEvent: evento, status: status});
             if (result.status === 201 || result.status === 200) {
                 toast.success("Inscrição realizada com sucesso!");

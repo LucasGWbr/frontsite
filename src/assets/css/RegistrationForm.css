@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    max-height: 100vh;
+    min-height: 100vh;
     padding: 20px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -99,4 +99,40 @@
 
 .form-footer a:hover {
     color: #667eea;
+}
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px; /* Ajuste o espaçamento conforme necessário */
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px; /* Espaço entre a caixa e o texto */
+    /* Remove o estilo padrão e permite que o label clique */
+    width: auto;
+}
+
+.checkbox-group .checkbox-label {
+    /* Remove o estilo padrão de label (display: block, margin-bottom) */
+    display: inline;
+    margin-bottom: 0;
+    font-weight: normal; /* Ou mantenha o peso que preferir */
+    cursor: pointer;
+}
+
+/* Classes para feedback de mensagem */
+.error-message {
+    color: #D8000C; /* Vermelho */
+    background-color: #FFD2D2; /* Fundo vermelho claro */
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
+}
+
+.success-message {
+    color: #4F8A10; /* Verde */
+    background-color: #DFF2BF; /* Fundo verde claro */
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 15px;
 }

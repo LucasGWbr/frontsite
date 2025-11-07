@@ -62,7 +62,6 @@ const LoginForm = () => {
                     {isLoading ? 'Entrando...' : 'Entrar'}
                 </button>
                 <div className="form-footer">
-                    <a href="#">Esqueceu a senha?</a>
                     <a href="/register">Criar conta</a>
                 </div>
             </form>

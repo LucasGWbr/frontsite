@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import '../assets/css/RegistrationForm.css';
-import {postUser} from "../Services/APIService.js";
+import {findUserId, getUser, postUser, putUser} from "../Services/APIService.js";
+import toast from "react-hot-toast";
+import {useNavigate} from "react-router-dom";
 
 const RegistrationForm = () => {
     // 1. Adicionar estados para os novos campos
@@ -9,33 +11,57 @@ const RegistrationForm = () => {
     const [password, setPassword] = useState('');
     const [document, setDocument] = useState('');
     const [phone, setPhone] = useState('');
-    const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const status = "ACTIVE";
+    const [isPartner, setIsPartner] = useState(false);
+    const navigate = useNavigate();
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-        setMessage('');
         try {
-            const result = await postUser({
-                name: name,
-                email: email,
-                password: password,
-                document: document,
-                phone: phone,
-                status: status
-            });
-            if (result.status === 201) {
-                setMessage("Conta criada com sucesso");
+            let result;
+            let userData = {};
+            if(!isPartner){
+                userData = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    document: document,
+                    phone: phone,
+                    status: status
+                }
+                result = await postUser(userData);
+
+            }else{
+                const user = await findUserId(email);
+                if(user.status === "ACTIVE"){
+                    toast.error("Usuario ja cadastrado!");
+                }else{
+                    userData = {
+                        id: user.id,
+                        name: user.name,
+                        email: email,
+                        document: user.document,
+                        password: password,
+                        phone: phone,
+                        status: status
+                    }
+                    result = await putUser(userData);
+                }
+            }
+            if (result.status === 201 || result.status === 200) {
+                toast.success("Conta criada com sucesso");
                 setName('');
                 setEmail('');
                 setPassword('');
                 setDocument('');
                 setPhone('');
+                navigate('/login');
             }
         } catch (err) {
-            setMessage("Erro ao criar conta");
+            toast.error("Erro ao criar conta");
             throw err;
         } finally {
             setIsLoading(false);
@@ -48,18 +74,36 @@ const RegistrationForm = () => {
                 <h2>Crie sua Conta</h2>
                 <p>É rápido e fácil. Preencha os campos abaixo para começar.</p>
 
-                <div className="input-group">
-                    <label htmlFor="name">Nome Completo</label>
+                {/* NOVO: Checkbox para usuário parceiro */}
+                <div className="input-group checkbox-group"> {/* Você pode precisar de CSS para .checkbox-group */}
                     <input
-                        type="text"
-                        id="name"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
+                        type="checkbox"
+                        id="isPartner"
+                        checked={isPartner}
+                        onChange={(e) => setIsPartner(e.target.checked)}
                         disabled={isLoading}
-                        placeholder="Seu nome completo"
                     />
+                    <label htmlFor="isPartner" className="checkbox-label">
+                        Tem cadastro parcial?
+                    </label>
                 </div>
+
+
+                {/* MODIFICADO: Renderização condicional para Nome */}
+                {!isPartner && (
+                    <div className="input-group">
+                        <label htmlFor="name">Nome Completo</label>
+                        <input
+                            type="text"
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required={!isPartner} // Só é obrigatório se NÃO for parceiro
+                            disabled={isLoading}
+                            placeholder="Seu nome completo"
+                        />
+                    </div>
+                )}
 
                 <div className="input-group">
                     <label htmlFor="email">Email</label>
@@ -74,19 +118,20 @@ const RegistrationForm = () => {
                     />
                 </div>
 
-                {/* 2. Adicionar os novos campos no formulário */}
-                <div className="input-group">
-                    <label htmlFor="document">CPF</label>
-                    <input
-                        type="text"
-                        id="document"
-                        value={document}
-                        onChange={(e) => setDocument(e.target.value)}
-                        required
-                        disabled={isLoading}
-                        placeholder="Apenas números"
-                    />
-                </div>
+                {!isPartner && (
+                    <div className="input-group">
+                        <label htmlFor="document">CPF</label>
+                        <input
+                            type="text"
+                            id="document"
+                            value={document}
+                            onChange={(e) => setDocument(e.target.value)}
+                            required={!isPartner} // Só é obrigatório se NÃO for parceiro
+                            disabled={isLoading}
+                            placeholder="Apenas números"
+                        />
+                    </div>
+                )}
 
                 <div className="input-group">
                     <label htmlFor="phone">Telefone</label>
@@ -122,7 +167,6 @@ const RegistrationForm = () => {
                     <span>Já tem uma conta? </span>
                     <a href="/login">Faça login</a>
                 </div>
-                {message && <p>{message}</p>}
             </form>
         </div>
     );

@@ -48,6 +48,17 @@ export const postUser = async (userData) => {
     }
     return response;
 }
+export const putUser = async (userData) => {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(userData),
+    })
+    if (!response.ok){
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response;
+}
 
 export const postInscription = async (inscriptionData) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/inscription`, {
@@ -127,7 +138,6 @@ export const findUserId = async (email) => {
 }
 
 export const postPresence = async (presenceData) => {
-    console.log(presenceData);
     const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/presence`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -137,6 +147,17 @@ export const postPresence = async (presenceData) => {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response;
+}
+export const getPresence = async (userId) => {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/presence/${userId}`, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+    if (!response.ok) {
+        console.log(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
 }
 
 // Você poderia adicionar outras funções aqui, como:
