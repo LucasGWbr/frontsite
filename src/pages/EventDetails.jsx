@@ -22,7 +22,7 @@ const EventDetails = ({ event, onBack }) => {
             if(id != null){
                 const data = await getInscriptionByUser(id);
                 const inscript = data.find(inscription => inscription.eventId === event.eventId);
-                if(inscript && inscript.status === 'ACTIVE') {
+                if(inscript && inscript.status === 'INSCRIPT') {
                     setIsInscripted(true);
                 }
             }
@@ -35,7 +35,7 @@ const EventDetails = ({ event, onBack }) => {
         e.preventDefault();
         if(isAuthenticated) {
             try{
-                const result = await postInscription({ user: id, event: event.eventId, status: "ACTIVE"});
+                const result = await postInscription({ user: id, event: event.eventId, status: "INSCRIPT"});
                 if(result.status === 201 || result.status === 200) {
                     toast.success("Inscrição realizada com sucesso!");
                     onBack();

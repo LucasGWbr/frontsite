@@ -66,7 +66,7 @@ const PresenceRegistration = ({eventName}) => {
             try {
                 // Gera uma chave única para este check-in pendente
                 const key = `checkin_${Date.now()}`;
-                await localforage.setItem(key, {emailUser: existingIdentifier, idEvent: selectedKit, status: status});
+                await localforage.setItem(key, {emailUser: existingIdentifier, idEvent: selectedKit, status: "PRESENCE"});
 
                 toast.success('Você está offline. Seu check-in foi salvo e será enviado assim que a conexão voltar!');
 
@@ -81,9 +81,8 @@ const PresenceRegistration = ({eventName}) => {
     const inscriptUser = async (email, evento) => {
         const user = await findUserId(email);
         try {
-            const status = "ACTIVE";
-            await postInscription({ user: user.id, event: evento, status: status });
-            const result = await postPresence({idUser: user.id, idEvent: evento, status: status});
+            await postInscription({ user: user.id, event: evento, status: "PRESENCE" });
+            const result = await postPresence({idUser: user.id, idEvent: evento, status: "PRESENCE"});
             if (result.status === 201 || result.status === 200) {
                 toast.success("Inscrição realizada com sucesso!");
             }

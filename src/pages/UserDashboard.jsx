@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '../assets/css/UserDashboard.css';
 import ConfirmationModal from "../components/ConfirmationModal.jsx";
-import {getEventByUser, getPresence, patchInscription} from "../Services/APIService.js";
+import {getEventByUser, getInscriptionByUser, patchInscription} from "../Services/APIService.js";
 
 const UserDashboard = () => {
     // Estados para as listas filtradas
@@ -23,26 +23,13 @@ const UserDashboard = () => {
             if (id !== null) {
                 try {
 
-                    const allInscricoes = await getEventByUser(id);
-                    const allPresences = await getPresence(id);
-                    console.log(allPresences);
-                    console.log("aqui");
+                    const userEvents = await getEventByUser(id);
+                    console.log(userEvents);
+                    const anteriores = userEvents.filter(i => i.status === "INSCRIPT");
+                    console.log(anteriores);
 
+                    const proximos = userEvents.filter(i => i.status === "PRESENCE");
 
-                    // --- DEBUG ---
-                    // Abra o console (F12) no navegador para ver os dados que chegam da API.
-                    console.log("Inscrições recebidas (allInscricoes):", allInscricoes);
-                    console.log("Presenças recebidas (allPresences):", allPresences);
-                    // --- FIM DO DEBUG ---
-
-                    // 2. Crie um Set (para performance) com os IDs dos eventos que TÊM presença
-                    //    AJUSTE AQUI se o nome da propriedade for diferente de 'event_id'
-                    const presenceEventIds = new Set(allPresences.map(p => p.event_id));
-
-                    // 3. Filtre a lista de inscrições com base no Set
-                    //    AJUSTE AQUI se o nome da propriedade for diferente de 'idEvent'
-                    const anteriores = allInscricoes.filter(i => presenceEventIds.has(i.idEvent));
-                    const proximos = allInscricoes.filter(i => !presenceEventIds.has(i.idEvent));
 
                     // 4. Atualize os estados para re-renderizar o componente
                     setEventosAnteriores(anteriores);

@@ -148,7 +148,7 @@ export const postPresence = async (presenceData) => {
     }
     return response;
 }
-export const getPresence = async (userId) => {
+export const getPresenceUser = async (userId) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/presence/${userId}`, {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
