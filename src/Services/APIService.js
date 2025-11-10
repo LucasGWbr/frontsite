@@ -160,6 +160,41 @@ export const getPresenceUser = async (userId) => {
     return await response.json();
 }
 
+export const postMail = async (email) => {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/email`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(email),
+    })
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response;
+}
+
+export const postCertificate = async (data) => {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/certificate`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response;
+}
+export const downloadCertificate = async (data) => {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/certificate/download`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    })
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response;
+}
+
 // Você poderia adicionar outras funções aqui, como:
 // export const getPostById = async (id) => { ... };
 // export const createPost = async (postData) => { ... };

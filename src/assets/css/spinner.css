@@ -1,0 +1,22 @@
+/* Estilo para o spinner (bola de carregamento) */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3); /* Cor da borda mais clara */
+    border-radius: 50%;
+    border-top-color: #ffffff; /* Cor da borda principal */
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 auto; /* Centraliza o spinner dentro do botão */
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Opcional: Ajusta o botão quando está carregando */
+.modal-button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}

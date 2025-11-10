@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import '../assets/css/PresenceRegistration.css';
-import {findUserId, getEvent, postInscription, postPresence, postUser} from "../Services/APIService.js";
+import {findUserId, getEvent, postInscription, postMail, postPresence, postUser} from "../Services/APIService.js";
 import localforage from 'localforage';
 
 const PresenceRegistration = ({eventName}) => {
@@ -24,6 +24,7 @@ const PresenceRegistration = ({eventName}) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [hasAccount, setHasAccount] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const limparCampos = () => {
@@ -80,16 +81,25 @@ const PresenceRegistration = ({eventName}) => {
 
     const inscriptUser = async (email, evento) => {
         const user = await findUserId(email);
+        setIsLoading(true);
         try {
             await postInscription({ user: user.id, event: evento, status: "PRESENCE" });
-            const result = await postPresence({idUser: user.id, idEvent: evento, status: "PRESENCE"});
+            const result = await postPresence({idUser: user.id, idEvent: evento, status: "ACTIVE"});
             if (result.status === 201 || result.status === 200) {
                 toast.success("Inscrição realizada com sucesso!");
+                await postMail({
+                    to: user.email,
+                    subject: "Presença confirmada",
+                    text: "Sua presença foi confirmada com sucesso!",
+                });
             }
         } catch (err) {
             toast.error("Erro ao marcar presença!")
             console.log(err);
             throw err;
+        }finally {
+            limparCampos();
+            setIsLoading(false);
         }
     }
 
@@ -97,6 +107,7 @@ const PresenceRegistration = ({eventName}) => {
     // Fluxo 2: Lidar com o cadastro parcial de novo usuário
     const handleNewUserSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         try {
             const result = await postUser({
                 name: newName,
@@ -114,6 +125,9 @@ const PresenceRegistration = ({eventName}) => {
             toast.error("Usuario ja existe")
             console.log(err);
             throw err;
+        }finally {
+            limparCampos();
+            setIsLoading(false);
         }
     };
 
@@ -157,7 +171,7 @@ const PresenceRegistration = ({eventName}) => {
                             />
                         </div>
                         <button type="submit" className="presence-button primary">
-                            Registrar Presença
+                            {isLoading ? <div className="spinner"></div> : 'Registrar Presença'}
                         </button>
                     </form>
                     ) : (
@@ -196,7 +210,7 @@ const PresenceRegistration = ({eventName}) => {
                     />
                 </div>
                 <button type="submit" className="presence-button primary">
-                    Cadastrar e Registrar Presença
+                    {isLoading ? <div className="spinner"></div> : 'Cadastrar e confirmar presença'}
                 </button>
             </form>
             )}

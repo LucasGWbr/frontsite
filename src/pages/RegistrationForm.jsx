@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../assets/css/RegistrationForm.css';
-import {findUserId, getUser, postUser, putUser} from "../Services/APIService.js";
+import {findUserId, getUser, postMail, postUser, putUser} from "../Services/APIService.js";
 import toast from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 
@@ -15,6 +15,7 @@ const RegistrationForm = () => {
     const status = "ACTIVE";
     const [isPartner, setIsPartner] = useState(false);
     const navigate = useNavigate();
+
 
 
     const handleSubmit = async (event) => {
@@ -52,6 +53,11 @@ const RegistrationForm = () => {
                 }
             }
             if (result.status === 201 || result.status === 200) {
+                await postMail({
+                    to: email,
+                    subject: "Bem vindo ao EventOS!",
+                    text: `Sua conta foi criada com sucesso!`,
+                });
                 toast.success("Conta criada com sucesso");
                 setName('');
                 setEmail('');
@@ -160,7 +166,7 @@ const RegistrationForm = () => {
                 </div>
 
                 <button type="submit" className="register-button" disabled={isLoading}>
-                    {isLoading ? 'Criando...' : 'Criar'}
+                    {isLoading ? <div className="spinner"></div> : 'Criar'}
                 </button>
 
                 <div className="form-footer">

@@ -19,7 +19,7 @@ const LoginForm = () => {
         const loginStatus = await login(email, password);
         setIsLoading(loginStatus.isLoading);
         if (loginStatus.isAuthenticated) {
-            navigate('/dashboard');
+            navigate('/');
         }else{
             setMessage(loginStatus.message);
             setPassword('');
@@ -59,7 +59,7 @@ const LoginForm = () => {
                     {message && <p>{message}</p>}
                 </div>
                 <button type="submit" className="login-button" disabled={isLoading}>
-                    {isLoading ? 'Entrando...' : 'Entrar'}
+                    {isLoading ? <div className="spinner"></div> : 'Entrar'}
                 </button>
                 <div className="form-footer">
                     <a href="/register">Criar conta</a>

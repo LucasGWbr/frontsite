@@ -1,6 +1,6 @@
 // src/contexts/AuthContext.js
 import React, {createContext, useState, useContext, useEffect} from 'react';
-import {findUserId, postAuth, postPresence} from "./APIService.js";
+import {findUserId, postAuth, postMail, postPresence} from "./APIService.js";
 import localforage from "localforage";
 import toast from "react-hot-toast";
 
@@ -31,6 +31,9 @@ export const AuthProvider = ({children}) => {
     });
     const [id, setId] = useState(() => {
         return localStorage.getItem('id') || null;
+    });
+    const [email, setEmail] = useState(() => {
+        return localStorage.getItem('email') || null;
     });
 
     localforage.config({
@@ -63,6 +66,11 @@ export const AuthProvider = ({children}) => {
                     const result = await postPresence({idUser: user.id, idEvent: checkinData.idEvent, status: status});
                     if (result.status === 201 || result.status === 200) {
                         await localforage.removeItem(key);
+                        await postMail({
+                           to: user.email,
+                            subject: "Presença confirmada",
+                            text: "Sua presença foi confirmada com sucesso!",
+                        });
                         toast.success('Um check-in pendente foi sincronizado!');
                     }else {
                         toast.error(`Falha ao sincronizar o check-in ${key}.`);
@@ -93,8 +101,10 @@ export const AuthProvider = ({children}) => {
                     localStorage.setItem('isAuthenticated', 'true');
                     localStorage.setItem('user', json.name);
                     localStorage.setItem('id', json.id);
+                    localStorage.setItem('email', json.email);
                     setUser(json.name);
                     setId(json.id);
+                    setEmail(json.email);
                     setIsAuthenticated(true);
                     return {
                         message: json,
@@ -122,6 +132,7 @@ export const AuthProvider = ({children}) => {
         localStorage.removeItem('isAuthenticated');
         localStorage.removeItem('user');
         localStorage.removeItem('id');
+        localStorage.removeItem('email');
 
         // 2. Limpa o estado do React
         setIsAuthenticated(false);
