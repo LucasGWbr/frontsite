@@ -5,10 +5,12 @@ const API_PORT = {
     node: import.meta.env.VITE_APINODE
 };
 
+
 /**
  * @returns {Promise<Array>} Uma promessa que resolve para um array de posts.
  * @throws {Error} Lança um erro se a requisição de rede falhar.
  */
+
 export const getEvent = async () => {
     try {
         const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/events`);
@@ -40,7 +42,10 @@ export const postAuth = async (authData) => {
 export const postUser = async (userData) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            },
         body: JSON.stringify(userData),
     })
     if (!response.ok) {
@@ -51,7 +56,10 @@ export const postUser = async (userData) => {
 export const putUser = async (userData) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user`, {
         method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+        },
         body: JSON.stringify(userData),
     })
     if (!response.ok){
@@ -63,7 +71,10 @@ export const putUser = async (userData) => {
 export const postInscription = async (inscriptionData) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/inscription`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+        },
         body: JSON.stringify(inscriptionData),
     })
     if (!response.ok) {
@@ -74,7 +85,13 @@ export const postInscription = async (inscriptionData) => {
 
 export const getInscriptionByUser = async (id) => {
     try{
-        const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/inscription/user/${id}`);
+        const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/inscription/user/${id}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            },
+        });
         if (!response.ok) {
             throw new Error('Falha na resposta da rede.');
         }
@@ -88,7 +105,13 @@ export const getInscriptionByUser = async (id) => {
 
 export const getEventByUser = async (id) => {
     try{
-        const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/events/user/${id}`);
+        const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/events/user/${id}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            },
+        });
         if (!response.ok) {
             throw new Error('Falha na resposta da rede.');
         }
@@ -103,7 +126,10 @@ export const getEventByUser = async (id) => {
 export const patchInscription = async (id, status) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/inscription/${id}`, {
         method: 'PATCH',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+        },
         body: JSON.stringify(status),
     })
     if (!response.ok) {
@@ -114,7 +140,10 @@ export const patchInscription = async (id, status) => {
 export const getUser = async (email) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user?email=${email}`, {
         method: 'GET',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+        },
     })
     if(!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -140,7 +169,10 @@ export const findUserId = async (email) => {
 export const postPresence = async (presenceData) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/presence`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + import.meta.env.VITE_NODEKEY,
+        },
         body: JSON.stringify(presenceData),
     })
     if (!response.ok) {
@@ -151,7 +183,10 @@ export const postPresence = async (presenceData) => {
 export const getPresenceUser = async (userId) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/presence/${userId}`, {
         method: 'GET',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + import.meta.env.VITE_NODEKEY,
+        },
     })
     if (!response.ok) {
         console.log(`HTTP error! status: ${response.status}`);
@@ -163,7 +198,10 @@ export const getPresenceUser = async (userId) => {
 export const postMail = async (email) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/email`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + import.meta.env.VITE_NODEKEY,
+        },
         body: JSON.stringify(email),
     })
     if (!response.ok) {
@@ -175,7 +213,10 @@ export const postMail = async (email) => {
 export const postCertificate = async (data) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/certificate`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + import.meta.env.VITE_NODEKEY,
+        },
         body: JSON.stringify(data),
     })
     if (!response.ok) {
@@ -186,7 +227,10 @@ export const postCertificate = async (data) => {
 export const downloadCertificate = async (data) => {
     const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/certificate/download`, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + import.meta.env.VITE_NODEKEY,
+        },
         body: JSON.stringify(data),
     })
     if (!response.ok) {
@@ -198,12 +242,30 @@ export const downloadCertificate = async (data) => {
 export const getCertificateByUser = async (user_id,event_id) => {
     const response =  await fetch(`${API_BASE_URL}:${API_PORT.node}/certificate/user/${user_id}/${event_id}`, {
         method: 'GET',
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + import.meta.env.VITE_NODEKEY,
+        },
     })
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
     return response.json();
+}
+
+export const postCertificateByHash = async (hash) => {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/certificate/verify`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + import.meta.env.VITE_NODEKEY,
+        },
+        body: JSON.stringify({hash}),
+    })
+    if (!response.ok) {
+        console.log(`HTTP error! status: ${response.status}`);
+    }
+    return response;
 }
 
 // Você poderia adicionar outras funções aqui, como:

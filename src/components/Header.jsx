@@ -6,7 +6,7 @@ import { useAuth} from "../Services/AuthContext.jsx";
 const Header = () => {
     // Seu estado de autenticação original (mantido)
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        return localStorage.getItem('isAuthenticated') === 'true';
+        return sessionStorage.getItem('isAuthenticated') === 'true';
     });
 
     // Novo estado para controlar o menu dropdown

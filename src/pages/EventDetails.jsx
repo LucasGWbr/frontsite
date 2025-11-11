@@ -9,13 +9,13 @@ import toast from 'react-hot-toast';
 const EventDetails = ({ event, onBack }) => {
     const imageUrl = "https://static-cse.canva.com/blob/1534622/eventocorporativo1.45438858.jpg";
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        return localStorage.getItem('isAuthenticated') === 'true';
+        return sessionStorage.getItem('isAuthenticated') === 'true';
     });
     const [id, setId] = useState(() => {
-        return localStorage.getItem('id') || null;
+        return sessionStorage.getItem('id') || null;
     });
     const [email, setEmail] = useState(() => {
-        return localStorage.getItem('email') || null;
+        return sessionStorage.getItem('email') || null;
     });
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -41,10 +41,8 @@ const EventDetails = ({ event, onBack }) => {
             setIsLoading(true);
             try{
                 const result = await postInscription({ user: id, event: event.eventId, status: "INSCRIPT"});
-                console.log(result);
                 if(result.status === 201 || result.status === 200) {
                     toast.success("Inscrição realizada com sucesso!");
-                    console.log({to: email, subject: "Inscrição realizada", text: `Inscrição realizada com sucesso curso de ${event.name}!` });
                     await postMail({to: email, subject: "Inscrição realizada", text: `Inscrição realizada com sucesso curso de ${event.name}!` });
                     setIsLoading(false);
                     onBack();

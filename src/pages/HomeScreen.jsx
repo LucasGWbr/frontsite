@@ -5,7 +5,6 @@ import {getEvent} from "../Services/APIService.js";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
-// Dados mocados para simular uma chamada de API
 
 const HomeScreen = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);

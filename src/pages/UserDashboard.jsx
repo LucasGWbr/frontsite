@@ -5,10 +5,11 @@ import {
     downloadCertificate,
     getCertificateByUser,
     getEventByUser,
-    patchInscription,
+    patchInscription, postCertificateByHash,
     postMail
 } from "../Services/APIService.js";
 import Header from "../components/Header.jsx";
+import toast from "react-hot-toast";
 
 const UserDashboard = () => {
     // Estados para as listas filtradas
@@ -19,13 +20,14 @@ const UserDashboard = () => {
     // Estados de controle do modal
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedInscricao, setSelectedInscricao] = useState(null);
+    const [hash, setHash] = useState('');
 
     // Estado para o ID do usuário
     const [id, setId] = useState(() => {
-        return localStorage.getItem('id') || null;
+        return sessionStorage.getItem('id') || null;
     });
     const [email, setEmail] = useState(() => {
-        return localStorage.getItem('email') || null;
+        return sessionStorage.getItem('email') || null;
     });
 
     // Efeito para carregar e filtrar os dados na inicialização
@@ -98,7 +100,6 @@ const UserDashboard = () => {
                 hash: certificate[0].validation_code,
                 date: inscricao.startDate
             });
-            console.log(response);
 
             const blob = await response.blob();
 
@@ -127,6 +128,21 @@ const UserDashboard = () => {
         }
     };
 
+    const handleHashVerify = async (e) => {
+        e.preventDefault(); // Impede o recarregamento da página
+        if (!hash) {
+            toast.error('Por favor, insira um código de validação.');
+            return;
+        }
+
+        const response = await postCertificateByHash(hash);
+        if (response.ok) {
+            toast.success("Certificado válido");
+        }else{
+            toast.error("Certificado não encontrado");
+        }
+    };
+
     return (
         <div>
             <Header/>
@@ -134,7 +150,31 @@ const UserDashboard = () => {
 
                 <div className="dashboard-content">
                     <h1>Meu Painel</h1>
-                    <a href={'/'}>CLIQUE</a>
+
+                    {/* --- NOVA SEÇÃO DE VALIDAÇÃO DE HASH --- */}
+                    <section className="events-section verification-section">
+                        <h2>Validar Certificado</h2>
+                        <p>Insira o código de validação para verificar a autenticidade de um certificado.</p>
+
+                        <form className="validation-form" onSubmit={handleHashVerify}>
+                            <div className="input-group">
+                                <label htmlFor="hash-input">Código de Validação</label>
+                                <input
+                                    type="text"
+                                    id="hash-input"
+                                    placeholder="Ex: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d"
+                                    value={hash}
+                                    onChange={(e) => setHash(e.target.value)}
+                                    disabled={isLoading}
+                                />
+                            </div>
+                            <button type="submit" className="action-button validate-button" disabled={isLoading}>
+                                Verificar
+                            </button>
+                        </form>
+                    </section>
+                    {/* --- FIM DA NOVA SEÇÃO --- */}
+
 
                     <section className="events-section">
                         <h2>Próximos Eventos</h2>
@@ -149,7 +189,6 @@ const UserDashboard = () => {
                                     <p><strong>Status:</strong> <span className="status-inscrito">Inscrito</span></p>
                                 </div>
                                 <div className="card-actions">
-                                    {/* Se o evento está aqui, ele NÃO tem presença, então só pode cancelar */}
                                     <button
                                         className="action-button cancel-button"
                                         onClick={() => handleCancelClick(inscricao)}
@@ -175,7 +214,6 @@ const UserDashboard = () => {
                                     <p><strong>Status:</strong> <span className="status-concluido">Concluído</span></p>
                                 </div>
                                 <div className="card-actions">
-                                    {/* Se o evento está aqui, ele TEM presença, então pode baixar certificado */}
                                     <button disabled={isLoading} onClick={() => handleDownload(inscricao)} className="action-button certificate-button">
                                         {isLoading ? <div className="spinner"></div> : 'Baixar Certificado'}
                                     </button>

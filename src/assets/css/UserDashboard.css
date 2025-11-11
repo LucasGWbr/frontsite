@@ -17,6 +17,7 @@
     padding-bottom: 15px;
 }
 
+
 .events-section {
     margin-bottom: 40px;
 }
@@ -25,6 +26,9 @@
     font-size: 24px;
     color: #444;
     margin-bottom: 20px;
+}
+.events-section p {
+    color: #444;
 }
 
 .subscription-card {
@@ -98,4 +102,64 @@
 .no-certificate {
     color: #7f8c8d;
     font-style: italic;
+}
+.verification-section {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+/* Reutiliza o estilo de formulário que já criamos em outras telas */
+.validation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* O input-group deve ser o mesmo de outras telas */
+.input-group {
+    margin-bottom: 0; /* Remove margem se não for necessário */
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
+/* Estilo para o novo botão de validação, usando a cor primária */
+.validate-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.validate-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Mídia query para alinhar lado a lado em telas maiores */
+@media (min-width: 768px) {
+    .validation-form {
+        flex-direction: row;
+        align-items: flex-end; /* Alinha o botão com o input */
+    }
+
+    .validation-form .input-group {
+        flex-grow: 1; /* Faz o input ocupar o espaço disponível */
+    }
+
+    .validation-form .validate-button {
+        width: auto; /* Tamanho automático para o botão */
+        white-space: nowrap; /* Evita que o texto do botão quebre */
+    }
 }

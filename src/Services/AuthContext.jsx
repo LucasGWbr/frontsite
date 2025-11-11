@@ -23,17 +23,20 @@ export const AuthProvider = ({children}) => {
     }, []);
 
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
-        return localStorage.getItem('isAuthenticated') === 'true';
+        return sessionStorage.getItem('isAuthenticated') === 'true';
+    });
+    const [token, setToken] = useState(() => {
+        return sessionStorage.getItem('token') || null;
     });
     // Carrega user e id também, se existirem
     const [user, setUser] = useState(() => {
-        return localStorage.getItem('user') || null;
+        return sessionStorage.getItem('user') || null;
     });
     const [id, setId] = useState(() => {
-        return localStorage.getItem('id') || null;
+        return sessionStorage.getItem('id') || null;
     });
     const [email, setEmail] = useState(() => {
-        return localStorage.getItem('email') || null;
+        return sessionStorage.getItem('email') || null;
     });
 
     localforage.config({
@@ -98,10 +101,11 @@ export const AuthProvider = ({children}) => {
                 const result = await postAuth({email: email, password: password});
                 if (result.ok) {
                     const json = await result.json();
-                    localStorage.setItem('isAuthenticated', 'true');
-                    localStorage.setItem('user', json.name);
-                    localStorage.setItem('id', json.id);
-                    localStorage.setItem('email', json.email);
+                    sessionStorage.setItem('token', json.token );
+                    sessionStorage.setItem('isAuthenticated', 'true');
+                    sessionStorage.setItem('user', json.name);
+                    sessionStorage.setItem('id', json.id);
+                    sessionStorage.setItem('email', json.email);
                     setUser(json.name);
                     setId(json.id);
                     setEmail(json.email);
@@ -129,16 +133,18 @@ export const AuthProvider = ({children}) => {
     const logout = async () => {
         // Lógica de logout
         // 1. Limpa do localStorage
-        localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('user');
-        localStorage.removeItem('id');
-        localStorage.removeItem('email');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('isAuthenticated');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('id');
+        sessionStorage.removeItem('email');
 
         // 2. Limpa o estado do React
         setIsAuthenticated(false);
         setUser(null);
         setId(null);
         setIsAuthenticated(false);
+        setToken(null);
     };
 
     return (
