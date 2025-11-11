@@ -1,7 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import '../assets/css/UserDashboard.css';
 import ConfirmationModal from "../components/ConfirmationModal.jsx";
-import {downloadCertificate, getEventByUser, patchInscription, postMail} from "../Services/APIService.js";
+import {
+    downloadCertificate,
+    getCertificateByUser,
+    getEventByUser,
+    patchInscription,
+    postMail
+} from "../Services/APIService.js";
 import Header from "../components/Header.jsx";
 
 const UserDashboard = () => {
@@ -29,7 +35,6 @@ const UserDashboard = () => {
                 try {
 
                     const userEvents = await getEventByUser(id);
-                    console.log(userEvents);
                     const proximos = userEvents.filter(i => i.status === "INSCRIPT");
                     const anteriores = userEvents.filter(i => i.status === "PRESENCE");
 
@@ -45,7 +50,7 @@ const UserDashboard = () => {
         };
 
         loadAndFilterEvents();
-    }, [id]); // Dependência: executa novamente se o 'id' mudar
+    }, [id]);
 
     // Abre o modal de confirmação
     const handleCancelClick = (inscricao) => {
@@ -86,10 +91,11 @@ const UserDashboard = () => {
     const handleDownload = async (inscricao) => {
         try {
             setIsLoading(true);
+            const certificate = await getCertificateByUser(id,inscricao.eventId);
             const response = await downloadCertificate({
                 name: inscricao.userName,
                 eventName: inscricao.name,
-                hash: 'temporary',
+                hash: certificate[0].validation_code,
                 date: inscricao.startDate
             });
             console.log(response);

@@ -44,6 +44,7 @@ const EventDetails = ({ event, onBack }) => {
                 console.log(result);
                 if(result.status === 201 || result.status === 200) {
                     toast.success("Inscrição realizada com sucesso!");
+                    console.log({to: email, subject: "Inscrição realizada", text: `Inscrição realizada com sucesso curso de ${event.name}!` });
                     await postMail({to: email, subject: "Inscrição realizada", text: `Inscrição realizada com sucesso curso de ${event.name}!` });
                     setIsLoading(false);
                     onBack();

@@ -1,7 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 import '../assets/css/PresenceRegistration.css';
-import {findUserId, getEvent, postInscription, postMail, postPresence, postUser} from "../Services/APIService.js";
+import {
+    findUserId,
+    getEvent,
+    postCertificate,
+    postInscription,
+    postMail,
+    postPresence,
+    postUser
+} from "../Services/APIService.js";
 import localforage from 'localforage';
 
 const PresenceRegistration = ({eventName}) => {
@@ -85,6 +93,7 @@ const PresenceRegistration = ({eventName}) => {
         try {
             await postInscription({ user: user.id, event: evento, status: "PRESENCE" });
             const result = await postPresence({idUser: user.id, idEvent: evento, status: "ACTIVE"});
+            await postCertificate({idUser: user.id, idEvent: evento, hash: user.name+"-"+evento});
             if (result.status === 201 || result.status === 200) {
                 toast.success("Inscrição realizada com sucesso!");
                 await postMail({

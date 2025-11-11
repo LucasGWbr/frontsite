@@ -195,6 +195,17 @@ export const downloadCertificate = async (data) => {
     return response;
 }
 
+export const getCertificateByUser = async (user_id,event_id) => {
+    const response =  await fetch(`${API_BASE_URL}:${API_PORT.node}/certificate/user/${user_id}/${event_id}`, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+    })
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+}
+
 // Você poderia adicionar outras funções aqui, como:
 // export const getPostById = async (id) => { ... };
 // export const createPost = async (postData) => { ... };
