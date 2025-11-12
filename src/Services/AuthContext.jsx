@@ -52,55 +52,58 @@ export const AuthProvider = ({children}) => {
         const checkinKeys = keys.filter(key => key.startsWith('checkin_'));
         const userCheckinKeys = keys.filter(key => key.startsWith('checkinUser_'));
 
-        if (checkinKeys.length === 0) {
+        if (checkinKeys.length === 0 && userCheckinKeys.length === 0) {
             console.log('Nenhum check-in pendente.');
             return;
         }
 
         toast.loading('Sincronizando check-ins pendentes...');
-
-        for(const key of userCheckinKeys) {
-            try{
-                const checkin = await localforage.getItem(key);
-                const result = await postUser({
-                    name: checkin.name,
-                    email: checkin.email,
-                    document: checkin.document,
-                    password: "000",
-                    status: "INACTIVE"
-                });
-                if (result.status === 201 || result.status === 200) {
-                    const response = await inscriptUser(checkin.email,checkin.idEvent);
-                    if(response.status === 201 || response.status === 200){
-                        await localforage.removeItem(key);
-                        toast.success('Um check-in pendente foi sincronizado!');
+        if(userCheckinKeys.length > 0) {
+            for(const key of userCheckinKeys) {
+                try{
+                    const checkin = await localforage.getItem(key);
+                    const result = await postUser({
+                        name: checkin.userName,
+                        email: checkin.emailUser,
+                        document: checkin.document,
+                        password: "000",
+                        status: "INACTIVE"
+                    });
+                    if (result.status === 201 || result.status === 200) {
+                        const response = await inscriptUser(checkin.emailUser,checkin.idEvent);
+                        if(response.status === 201 || response.status === 200){
+                            await localforage.removeItem(key);
+                            toast.success('Um check-in pendente foi sincronizado!');
+                        }
                     }
+                }catch(err) {
+                    console.log(err);
                 }
-            }catch(err) {
-                console.log(err);
             }
         }
 
-        for (const key of checkinKeys) {
-            try {
-                const checkinData = await localforage.getItem(key);
+        if(checkinKeys.length > 0) {
+            for (const key of checkinKeys) {
                 try {
-                    const result = await inscriptUser(checkinData.email,checkinData.idEvent);
-                    if (result.status === 201 || result.status === 200) {
-                        await localforage.removeItem(key);
-                        toast.success('Um check-in pendente foi sincronizado!');
-                    }else {
-                        toast.error(`Falha ao sincronizar o check-in ${key}.`);
-                    }
+                    const checkinData = await localforage.getItem(key);
+                    try {
+                        const result = await inscriptUser(checkinData.emailUser,checkinData.idEvent);
+                        if (result.status === 201 || result.status === 200) {
+                            await localforage.removeItem(key);
+                            toast.success('Um check-in pendente foi sincronizado!');
+                        }else {
+                            toast.error(`Falha ao sincronizar o check-in ${key}.`);
+                        }
                     } catch (err) {
-                    toast.error("Erro ao realizar inscrição!")
-                    console.log(err);
-                    throw err;
-                }
+                        toast.error("Erro ao realizar inscrição!")
+                        console.log(err);
+                        throw err;
+                    }
 
-            } catch (error) {
-                toast.error('Falha na sincronização. Tentaremos mais tarde.');
-                break; // Sai do loop e espera o próximo evento 'online'
+                } catch (error) {
+                    toast.error('Falha na sincronização. Tentaremos mais tarde.');
+                    break; // Sai do loop e espera o próximo evento 'online'
+                }
             }
         }
     };
