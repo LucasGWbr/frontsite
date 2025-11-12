@@ -1,12 +1,13 @@
 // src/contexts/AuthContext.js
-import React, {createContext, useState, useContext, useEffect} from 'react';
-import {findUserId, inscriptUser, postAuth, postInscription, postMail, postUser} from "./APIService.js";
+import React, {createContext, useState, useContext, useEffect, useRef} from 'react';
+import {inscriptUser, postAuth, postUser} from "./APIService.js";
 import localforage from "localforage";
 import toast from "react-hot-toast";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({children}) => {
+    const isSyncing = useRef(false);
     useEffect(() => {
         // 1. Tenta sincronizar assim que o app carrega (caso já esteja online)
         if (navigator.onLine) {
@@ -44,6 +45,11 @@ export const AuthProvider = ({children}) => {
         storeName: 'checkinsUserPendentes'
     });
     const syncPendingCheckins = async () => {
+        if(isSyncing.current){
+            return;
+        }
+        isSyncing.current = true;
+
         console.log('Verificando check-ins pendentes...');
 
         // Pega todas as chaves salvas na loja 'checkinsPendentes'
@@ -54,57 +60,67 @@ export const AuthProvider = ({children}) => {
 
         if (checkinKeys.length === 0 && userCheckinKeys.length === 0) {
             console.log('Nenhum check-in pendente.');
+            isSyncing.current = false;
             return;
         }
-
-        toast.loading('Sincronizando check-ins pendentes...');
-        if(userCheckinKeys.length > 0) {
-            for(const key of userCheckinKeys) {
-                try{
-                    const checkin = await localforage.getItem(key);
-                    const result = await postUser({
-                        name: checkin.userName,
-                        email: checkin.emailUser,
-                        document: checkin.document,
-                        password: "000",
-                        status: "INACTIVE"
-                    });
-                    if (result.status === 201 || result.status === 200) {
-                        const response = await inscriptUser(checkin.emailUser,checkin.idEvent);
-                        if(response.status === 201 || response.status === 200){
-                            await localforage.removeItem(key);
-                            toast.success('Um check-in pendente foi sincronizado!');
-                        }
-                    }
-                }catch(err) {
-                    console.log(err);
-                }
-            }
-        }
-
-        if(checkinKeys.length > 0) {
-            for (const key of checkinKeys) {
-                try {
-                    const checkinData = await localforage.getItem(key);
-                    try {
-                        const result = await inscriptUser(checkinData.emailUser,checkinData.idEvent);
+        try{
+            toast.loading('Sincronizando check-ins pendentes...');
+            if(userCheckinKeys.length > 0) {
+                for(const key of userCheckinKeys) {
+                    try{
+                        const checkin = await localforage.getItem(key);
+                        const result = await postUser({
+                            name: checkin.userName,
+                            email: checkin.emailUser,
+                            document: checkin.document,
+                            password: "000",
+                            status: "INACTIVE"
+                        });
                         if (result.status === 201 || result.status === 200) {
-                            await localforage.removeItem(key);
-                            toast.success('Um check-in pendente foi sincronizado!');
-                        }else {
-                            toast.error(`Falha ao sincronizar o check-in ${key}.`);
+                            const response = await inscriptUser(checkin.emailUser,checkin.idEvent);
+                            if(response.status === 201 || response.status === 200){
+                                await localforage.removeItem(key);
+                                toast.success('Um check-in pendente foi sincronizado!');
+                            }
+                        }else{
+                            toast.error('Usuario já existe.');
                         }
-                    } catch (err) {
-                        toast.error("Erro ao realizar inscrição!")
+                    }catch(err) {
                         console.log(err);
-                        throw err;
                     }
-
-                } catch (error) {
-                    toast.error('Falha na sincronização. Tentaremos mais tarde.');
-                    break; // Sai do loop e espera o próximo evento 'online'
                 }
             }
+
+            if(checkinKeys.length > 0) {
+                for (const key of checkinKeys) {
+                    try {
+                        const checkinData = await localforage.getItem(key);
+                        try {
+                            const result = await inscriptUser(checkinData.emailUser,checkinData.idEvent);
+                            if (result.status === 201 || result.status === 200) {
+                                await localforage.removeItem(key);
+                                toast.success('Um check-in pendente foi sincronizado!');
+                            }else {
+                                toast.error(`Falha ao sincronizar o check-in ${key}.`);
+                            }
+                        } catch (err) {
+                            toast.error("Erro ao realizar inscrição!")
+                            console.log(err);
+                            throw err;
+                        }
+
+                    } catch (error) {
+                        console.error(error);
+                        toast.error('Falha na sincronização. Tentaremos mais tarde.');
+                        break; // Sai do loop e espera o próximo evento 'online'
+                    }
+                }
+            }
+        }catch(e){
+            console.error(e);
+        }finally {
+            isSyncing.current = false;
+            toast.dismiss();
         }
     };
 

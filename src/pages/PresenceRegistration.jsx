@@ -122,6 +122,8 @@ const PresenceRegistration = ({eventName}) => {
                 if (result.status === 201 || result.status === 202) {
                     await inscriptUser(newEmail,selectedKit);
                     toast.success("Usuario parcial criado e inscrito com sucesso !");
+                }else{
+                    toast.error('Usuario já existe.');
                 }
 
             } catch (err) {

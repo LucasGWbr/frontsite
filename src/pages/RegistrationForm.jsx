@@ -34,6 +34,9 @@ const RegistrationForm = () => {
                     status: status
                 }
                 result = await postUser(userData);
+                if(result.status ===  403){
+                    toast.error('Usuario já existe.');
+                }
 
             }else{
                 const user = await findUserId(email);
