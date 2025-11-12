@@ -3,7 +3,7 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import {getInscriptionByUser, postInscription, postMail} from "../Services/APIService.js";
 import {useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import toast from 'react-hot-toast';
 
 const EventDetails = ({ event, onBack }) => {
@@ -25,9 +25,11 @@ const EventDetails = ({ event, onBack }) => {
         const verifyEvent = async () => {
             if(id != null){
                 const data = await getInscriptionByUser(id);
-                const inscript = data.find(inscription => inscription.eventId === event.eventId);
-                if(inscript && (inscript.status === 'INSCRIPT' || inscript.status === 'PRESENCE')) {
-                    setIsInscripted(true);
+                    if(!data){
+                    const inscript = data.find(inscription => inscription.eventId === event.eventId);
+                    if(inscript && (inscript.status === 'INSCRIPT' || inscript.status === 'PRESENCE')) {
+                        setIsInscripted(true);
+                    }
                 }
             }
         };
@@ -42,16 +44,16 @@ const EventDetails = ({ event, onBack }) => {
             try{
                 const result = await postInscription({ user: id, event: event.eventId, status: "INSCRIPT"});
                 if(result.status === 201 || result.status === 200) {
-                    toast.success("Inscrição realizada com sucesso!");
                     await postMail({to: email, subject: "Inscrição realizada", text: `Inscrição realizada com sucesso curso de ${event.name}!` });
-                    setIsLoading(false);
+                    toast.success("Inscrição realizada com sucesso!");
                     onBack();
                 }
             }catch (err){
                 toast.error("Erro ao realizar inscrição!")
-                setIsLoading(false);
                 console.log(err);
                 throw err;
+            }finally {
+                setIsLoading(false);
             }
         }else{
             navigate('/login');
@@ -78,7 +80,7 @@ const EventDetails = ({ event, onBack }) => {
                     </p>
                     <p className="details-description">{event.description}</p>
                     <button onClick={handleSubmit} className="register-button" disabled={isInscripted || isLoading}>
-                        {!isAuthenticated ? 'Entrar na conta' : isInscripted ? 'Você ja esta inscrito' : 'Inscrever-se agora'}
+                        {!isAuthenticated ? 'Entrar na conta' : isInscripted ? 'Você já está inscrito' : !isLoading ? 'Inscrever-se agora' : <div className="spinner"></div> }
                         </button>
                 </div>
             </div>

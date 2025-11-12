@@ -89,6 +89,9 @@ export const getInscriptionByUser = async (id) => {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
             },
         });
+        if(response.status === 404){
+            console.error("Inscrição não encontrada")
+        }
         if (!response.ok) {
             throw new Error('Falha na resposta da rede.');
         }
@@ -139,7 +142,6 @@ export const getUser = async (email) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
         },
     })
     if(!response.ok) {

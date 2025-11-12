@@ -12,7 +12,6 @@ import Header from "../components/Header.jsx";
 import toast from "react-hot-toast";
 
 const UserDashboard = () => {
-    // Estados para as listas filtradas
     const [proximosEventos, setProximosEventos] = useState([]);
     const [eventosAnteriores, setEventosAnteriores] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -137,6 +136,7 @@ const UserDashboard = () => {
 
         const response = await postCertificateByHash(hash);
         if (response.ok) {
+            setHash('');
             toast.success("Certificado válido");
         }else{
             toast.error("Certificado não encontrado");
