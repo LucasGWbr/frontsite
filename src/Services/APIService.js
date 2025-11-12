@@ -64,11 +64,10 @@ export const putUser = async (userData) => {
 }
 
 export const postInscription = async (inscriptionData) => {
-    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/inscription`, {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/inscription/save`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
         },
         body: JSON.stringify(inscriptionData),
     })

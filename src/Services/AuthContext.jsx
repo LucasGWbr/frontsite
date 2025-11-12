@@ -62,7 +62,6 @@ export const AuthProvider = ({children}) => {
             try {
                 const checkinData = await localforage.getItem(key);
 
-
                 const user = await findUserId(checkinData.emailUser);
                 try {
                     const result = await postInscription({ user: user.id, event: checkinData.idEvent, status: "PRESENCE" });
