@@ -1,5 +1,5 @@
 
-const API_BASE_URL = 'http://localhost';
+const API_BASE_URL = 'http://177.44.248.80';
 const API_PORT = {
     java: import.meta.env.VITE_APIJAVA,
     node: import.meta.env.VITE_APINODE
@@ -17,9 +17,7 @@ export const getEvent = async () => {
         if (!response.ok) {
             throw new Error('Falha na resposta da rede.');
         }
-
         return await response.json();
-
     } catch (error) {
         console.error("Erro ao buscar eventos:", error);
         throw error;

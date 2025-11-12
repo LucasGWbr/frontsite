@@ -25,7 +25,7 @@ const EventDetails = ({ event, onBack }) => {
         const verifyEvent = async () => {
             if(id != null){
                 const data = await getInscriptionByUser(id);
-                    if(!data){
+                    if(data != null){
                     const inscript = data.find(inscription => inscription.eventId === event.eventId);
                     if(inscript && (inscript.status === 'INSCRIPT' || inscript.status === 'PRESENCE')) {
                         setIsInscripted(true);
