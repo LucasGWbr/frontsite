@@ -1,6 +1,6 @@
 // src/contexts/AuthContext.js
 import React, {createContext, useState, useContext, useEffect} from 'react';
-import {findUserId, postAuth, postMail, postPresence} from "./APIService.js";
+import {findUserId, postAuth, postInscription, postMail} from "./APIService.js";
 import localforage from "localforage";
 import toast from "react-hot-toast";
 
@@ -65,8 +65,7 @@ export const AuthProvider = ({children}) => {
 
                 const user = await findUserId(checkinData.emailUser);
                 try {
-                    const status = "ACTIVE";
-                    const result = await postPresence({idUser: user.id, idEvent: checkinData.idEvent, status: status});
+                    const result = await postInscription({ user: user.id, event: checkinData.idEvent, status: "PRESENCE" });
                     if (result.status === 201 || result.status === 200) {
                         await localforage.removeItem(key);
                         await postMail({

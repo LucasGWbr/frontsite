@@ -7,7 +7,6 @@ import {
     postCertificate,
     postInscription,
     postMail,
-    postPresence,
     postUser
 } from "../Services/APIService.js";
 import localforage from 'localforage';
@@ -91,11 +90,10 @@ const PresenceRegistration = ({eventName}) => {
         const user = await findUserId(email);
         setIsLoading(true);
         try {
-            await postInscription({ user: user.id, event: evento, status: "PRESENCE" });
-            const result = await postPresence({idUser: user.id, idEvent: evento, status: "ACTIVE"});
+            const result = await postInscription({ user: user.id, event: evento, status: "PRESENCE" });
             await postCertificate({idUser: user.id, idEvent: evento, hash: user.name+"-"+evento});
             if (result.status === 201 || result.status === 200) {
-                toast.success("Inscrição realizada com sucesso!");
+                toast.success("Presença confirmada com sucesso!");
                 await postMail({
                     to: user.email,
                     subject: "Presença confirmada",

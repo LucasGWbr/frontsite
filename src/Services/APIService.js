@@ -7,7 +7,6 @@ const API_PORT = {
 
 
 /**
- * @returns {Promise<Array>} Uma promessa que resolve para um array de posts.
  * @throws {Error} Lança um erro se a requisição de rede falhar.
  */
 
@@ -40,11 +39,10 @@ export const postAuth = async (authData) => {
 }
 
 export const postUser = async (userData) => {
-    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user`, {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
             },
         body: JSON.stringify(userData),
     })
@@ -58,7 +56,6 @@ export const putUser = async (userData) => {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + sessionStorage.getItem('token')
         },
         body: JSON.stringify(userData),
     })
@@ -164,35 +161,6 @@ export const findUserId = async (email) => {
         console.log(err);
         throw err;
     }
-}
-
-export const postPresence = async (presenceData) => {
-    const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/presence`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + import.meta.env.VITE_NODEKEY,
-        },
-        body: JSON.stringify(presenceData),
-    })
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response;
-}
-export const getPresenceUser = async (userId) => {
-    const response = await fetch(`${API_BASE_URL}:${API_PORT.node}/presence/${userId}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + import.meta.env.VITE_NODEKEY,
-        },
-    })
-    if (!response.ok) {
-        console.log(`HTTP error! status: ${response.status}`);
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
 }
 
 export const postMail = async (email) => {
