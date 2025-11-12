@@ -1,6 +1,6 @@
 // src/contexts/AuthContext.js
 import React, {createContext, useState, useContext, useEffect} from 'react';
-import {findUserId, postAuth, postInscription, postMail} from "./APIService.js";
+import {findUserId, inscriptUser, postAuth, postInscription, postMail, postUser} from "./APIService.js";
 import localforage from "localforage";
 import toast from "react-hot-toast";
 
@@ -50,6 +50,7 @@ export const AuthProvider = ({children}) => {
         const keys = await localforage.keys();
         // Filtra apenas as chaves de check-in
         const checkinKeys = keys.filter(key => key.startsWith('checkin_'));
+        const userCheckinKeys = keys.filter(key => key.startsWith('checkinUser_'));
 
         if (checkinKeys.length === 0) {
             console.log('Nenhum check-in pendente.');
@@ -58,20 +59,35 @@ export const AuthProvider = ({children}) => {
 
         toast.loading('Sincronizando check-ins pendentes...');
 
+        for(const key of userCheckinKeys) {
+            try{
+                const checkin = await localforage.getItem(key);
+                const result = await postUser({
+                    name: checkin.name,
+                    email: checkin.email,
+                    document: checkin.document,
+                    password: "000",
+                    status: "INACTIVE"
+                });
+                if (result.status === 201 || result.status === 200) {
+                    const response = await inscriptUser(checkin.email,checkin.idEvent);
+                    if(response.status === 201 || response.status === 200){
+                        await localforage.removeItem(key);
+                        toast.success('Um check-in pendente foi sincronizado!');
+                    }
+                }
+            }catch(err) {
+                console.log(err);
+            }
+        }
+
         for (const key of checkinKeys) {
             try {
                 const checkinData = await localforage.getItem(key);
-
-                const user = await findUserId(checkinData.emailUser);
                 try {
-                    const result = await postInscription({ user: user.id, event: checkinData.idEvent, status: "PRESENCE" });
+                    const result = await inscriptUser(checkinData.email,checkinData.idEvent);
                     if (result.status === 201 || result.status === 200) {
                         await localforage.removeItem(key);
-                        await postMail({
-                           to: user.email,
-                            subject: "Presença confirmada",
-                            text: "Sua presença foi confirmada com sucesso!",
-                        });
                         toast.success('Um check-in pendente foi sincronizado!');
                     }else {
                         toast.error(`Falha ao sincronizar o check-in ${key}.`);
@@ -83,13 +99,10 @@ export const AuthProvider = ({children}) => {
                 }
 
             } catch (error) {
-                // Deu erro de rede no meio da sincronização,
-                // pare de tentar por agora.
                 toast.error('Falha na sincronização. Tentaremos mais tarde.');
                 break; // Sai do loop e espera o próximo evento 'online'
             }
         }
-        toast.dismiss(); // Remove o "loading"
     };
 
     // Funções para simular login e logout

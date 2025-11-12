@@ -3,7 +3,7 @@ import toast from 'react-hot-toast';
 import '../assets/css/PresenceRegistration.css';
 import {
     findUserId,
-    getEvent,
+    getEvent, inscriptUser,
     postCertificate,
     postInscription,
     postMail,
@@ -68,6 +68,7 @@ const PresenceRegistration = ({eventName}) => {
 
     const handleExistingUserSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         if (navigator.onLine) {
             await inscriptUser(existingIdentifier, selectedKit);
         } else {
@@ -81,60 +82,56 @@ const PresenceRegistration = ({eventName}) => {
             } catch (err) {
                 toast.error('Erro ao salvar o check-in localmente.');
                 throw err;
+            }finally {
+                setIsLoading(false);
             }
         }
-
+        setIsLoading(false);
     };
 
-    const inscriptUser = async (email, evento) => {
-        const user = await findUserId(email);
-        setIsLoading(true);
-        try {
-            const result = await postInscription({ user: user.id, event: evento, status: "PRESENCE" });
-            await postCertificate({idUser: user.id, idEvent: evento, hash: user.name+"-"+evento});
-            if (result.status === 201 || result.status === 200) {
-                toast.success("Presença confirmada com sucesso!");
-                await postMail({
-                    to: user.email,
-                    subject: "Presença confirmada",
-                    text: "Sua presença foi confirmada com sucesso!",
-                });
-            }
-        } catch (err) {
-            toast.error("Erro ao marcar presença!")
-            console.log(err);
-            throw err;
-        }finally {
-            limparCampos();
-            setIsLoading(false);
-        }
-    }
+
 
 
     // Fluxo 2: Lidar com o cadastro parcial de novo usuário
     const handleNewUserSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        try {
-            const result = await postUser({
-                name: newName,
-                email: newEmail,
-                document: newCpf,
-                password: "000",
-                status: "INACTIVE"
-            });
-            if (result.status === 201 || result.status === 202) {
-                await inscriptUser(newEmail,selectedKit);
-                toast.success("Usuario parcial criado e inscrito com sucesso !");
-            }
+        if(!navigator.onLine) {
+            try {
+                // Gera uma chave única para este check-in pendente
+                const key = `checkinUser_${Date.now()}`;
+                await localforage.setItem(key, {userName:newName,emailUser: newEmail,document:newCpf, idEvent: selectedKit});
 
-        } catch (err) {
-            toast.error("Usuario ja existe")
-            console.log(err);
-            throw err;
-        }finally {
-            limparCampos();
-            setIsLoading(false);
+                toast.success('Você está offline. Seu check-in foi salvo e será enviado assim que a conexão voltar!');
+            } catch (err) {
+                toast.error('Erro ao salvar o check-in localmente.');
+                throw err;
+            }finally {
+                setIsLoading(false);
+                limparCampos();
+            }
+        }else{
+            try {
+                const result = await postUser({
+                    name: newName,
+                    email: newEmail,
+                    document: newCpf,
+                    password: "000",
+                    status: "INACTIVE"
+                });
+                if (result.status === 201 || result.status === 202) {
+                    await inscriptUser(newEmail,selectedKit);
+                    toast.success("Usuario parcial criado e inscrito com sucesso !");
+                }
+
+            } catch (err) {
+                toast.error("Usuario ja existe")
+                console.log(err);
+                throw err;
+            }finally {
+                limparCampos();
+                setIsLoading(false);
+            }
         }
     };
 

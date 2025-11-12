@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 
 const API_BASE_URL = 'http://177.44.248.80';
 const API_PORT = {
@@ -233,6 +234,25 @@ export const postCertificateByHash = async (hash) => {
         console.log(`HTTP error! status: ${response.status}`);
     }
     return response;
+}
+
+export const inscriptUser = async (email, evento) => {
+    const user = await findUserId(email);
+    try {
+        const result = await postInscription({ user: user.id, event: evento, status: "PRESENCE" });
+        await postCertificate({idUser: user.id, idEvent: evento, hash: user.name+"-"+evento});
+        if (result.status === 201 || result.status === 200) {
+            await postMail({
+                to: user.email,
+                subject: "Presença confirmada",
+                text: "Sua presença foi confirmada com sucesso!",
+            });
+        }
+        return result;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 }
 
 // Você poderia adicionar outras funções aqui, como:
