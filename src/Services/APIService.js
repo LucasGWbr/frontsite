@@ -51,7 +51,7 @@ export const postUser = async (userData) => {
     return response;
 }
 export const putUser = async (userData) => {
-    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user`, {
+    const response = await fetch(`${API_BASE_URL}:${API_PORT.java}/user/update`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
