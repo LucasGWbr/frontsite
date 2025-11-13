@@ -64,8 +64,8 @@ export const AuthProvider = ({children}) => {
             return;
         }
         try{
-            toast.loading('Sincronizando check-ins pendentes...');
             if(userCheckinKeys.length > 0) {
+                toast.loading('Sincronizando check-ins pendentes...');
                 for(const key of userCheckinKeys) {
                     try{
                         const checkin = await localforage.getItem(key);
@@ -92,6 +92,7 @@ export const AuthProvider = ({children}) => {
             }
 
             if(checkinKeys.length > 0) {
+                toast.loading('Sincronizando check-ins pendentes...');
                 for (const key of checkinKeys) {
                     try {
                         const checkinData = await localforage.getItem(key);

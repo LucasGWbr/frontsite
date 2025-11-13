@@ -123,11 +123,11 @@ const PresenceRegistration = ({eventName}) => {
                     await inscriptUser(newEmail,selectedKit);
                     toast.success("Usuario parcial criado e inscrito com sucesso !");
                 }else{
-                    toast.error('Usuario já existe.');
+                    toast.error('Erro ao salvar o check-in localmente.');
                 }
 
             } catch (err) {
-                toast.error("Usuario ja existe")
+                toast.error("Erro ao salvar o check-in localmente.")
                 console.log(err);
                 throw err;
             }finally {
@@ -176,7 +176,7 @@ const PresenceRegistration = ({eventName}) => {
                                 required
                             />
                         </div>
-                        <button type="submit" className="presence-button primary">
+                        <button type="submit" className="presence-button primary" disabled={!selectedKit}>
                             {isLoading ? <div className="spinner"></div> : 'Registrar Presença'}
                         </button>
                     </form>
@@ -215,7 +215,7 @@ const PresenceRegistration = ({eventName}) => {
                         onChange={(e) => setNewCpf(e.target.value)}
                     />
                 </div>
-                <button type="submit" className="presence-button primary">
+                <button type="submit" className="presence-button primary" disabled={!selectedKit}>
                     {isLoading ? <div className="spinner"></div> : 'Cadastrar e confirmar presença'}
                 </button>
             </form>
