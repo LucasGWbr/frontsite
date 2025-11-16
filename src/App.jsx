@@ -31,7 +31,6 @@ function App() {
                     },
                 }}
             />
-            <AuthProvider>
             <Routes>
                 <Route path="/" element={<HomeScreen />} />
                 <Route path="/login" element={<LoginForm />} />
@@ -46,7 +45,6 @@ function App() {
                     element={<PresenceRegistration />}
                 />
             </Routes>
-                </AuthProvider>
 
 
         </div>

@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 
 const API_BASE_URL = 'http://177.44.248.80';
 const API_PORT = {
