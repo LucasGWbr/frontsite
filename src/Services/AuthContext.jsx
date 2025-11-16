@@ -5,12 +5,13 @@ import localforage from "localforage";
 import toast from "react-hot-toast";
 
 const AuthContext = createContext(null);
-
+let hasInitialSyncRun = false;
 export const AuthProvider = ({children}) => {
     const isSyncing = useRef(false);
     useEffect(() => {
         // 1. Tenta sincronizar assim que o app carrega (caso já esteja online)
-        if (navigator.onLine) {
+        if (navigator.onLine && !hasInitialSyncRun) {
+            hasInitialSyncRun = true;
             syncPendingCheckins();
         }
 
